@@ -1,5 +1,17 @@
 <?php
+	//CS174 - Fabio Di Troia
+	//Virus Check
+	//by Jasper Matthew Dumdumaya and Trung Tran
 	
+	//------------------//
+	//	Setup Users		//
+	//------------------//
+	
+	//**********************************************//
+	//	Only run once to set up tables for database	//
+	//**********************************************//
+	
+	//database login
 	require_once 'login.php';
 	$conn = new mysqli($hn, $un, $pw, $db);
 	if ($conn->connect_error) die($conn->connect_error);

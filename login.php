@@ -1,9 +1,13 @@
 <?php
-
-/*	Jasper Matthew Dumdumaya
-	CS 174
-	4/28/19
-	Assignment 5 - authentication	*/
+	//CS174 - Fabio Di Troia
+	//Virus Check
+	//by Jasper Matthew Dumdumaya and Trung Tran
+	
+	//------------------//
+	//		Login		//
+	//------------------//
+	
+	//database setup
 	$hn = 'localhost';
 	$un = 'username';
 	$pw = 'password';
