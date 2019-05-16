@@ -12,5 +12,5 @@
 	$un = 'username';
 	$pw = 'password';
 	$db = 'final';
-	
+
 ?>

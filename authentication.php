@@ -29,13 +29,14 @@
 			//hash and salt password
 			$token = hash('ripemd128', "$salt$pw_temp");
 
-			if ($token == $row[3]) {
+
+			if ($token == $row[2]) {
 				//user signed in correctly
 				session_start();
 				$_SESSION['username'] = $un_temp;
 				$_SESSION['password'] = $pw_temp;
 				$_SESSION['email'] = $row[1];
-				echo "You are now logged in as $row[2]";
+				echo "You are now logged in as $row[1]";
 				die("<p><a href=start.php>Click here to continue</a></p>");
 			}
 			else {

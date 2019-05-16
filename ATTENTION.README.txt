@@ -1,0 +1,25 @@
+There will be 3 tables in the database: Users, MalwareDex and Limbo
+
+Table Users:
+	ID SMALLINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	Username VARCHAR(50) NOT NULL UNIQUE,
+	Password VARCHAR(255) NOT NULL,
+	Email VARCHAR(50) NOT NULL UNIQUE, 
+	Clearance CHAR(1) NOT NULL); 
+
+Explanation for "Clearance": Will have 3 levels. ADMIN will have level 3 (Will allow to make edits to MalwareDex + privilleges of level 2)
+				                 Contributors will have level 2 (Will only allow to make edits to Limbo + privilledges of level 1)
+				                 Normal users will have level 1 (Will only allow to upload files to be scanned)
+
+
+Table MalwareDex:                        //This will contain the approved malware signatures that will be used to scan for infections. Can only be edited by ADMIN
+	Name VARCHAR(50) NOT NULL UNIQUE,
+	Signature BLOB NOT NULL,
+	Date TIMESTAMP);//Date this was added
+
+
+Table Limbo:                           //This is where malwares submitted by Contributors will be stored until they are approved my ADMIN
+	User VARCHAR(50) NOT NULL,
+	Name VARCHAR(50) NOT NULL UNIQUE,
+	Signature BLOB NOT NULL,
+	Date TIMESTAMP);//Date this was added

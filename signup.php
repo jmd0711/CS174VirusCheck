@@ -24,8 +24,12 @@
 		//hash and salt password
 		$token = hash('ripemd128', "$salt$password");
 		
-		//add user to database
+		if(isset($_POST['contributor'])) {//add user to database as a clearance level 2
+			add_contributor($conn, $email, $username,$token);
+		}
+		else{//add user to database as a clearance level 1
 		add_user($conn, $email, $username, $token);
+		}
 	}
 	
 	//get user inputs
@@ -34,6 +38,7 @@
 	Email		<input type="text" name="email">
 	Username	<input type="text" name="username">
 	Password	<input type="password" name="password">
+	<input type="checkbox" name="contributor"> Sign me up as a contributor
 	<input type="submit" name="add" value="Sign Up">
 	</pre></form>
 _END;
@@ -48,7 +53,16 @@ _END;
 	//functions
 	//TODO: print message if email or username is already taken
 	function add_user($connection, $email, $username, $password) {
-		$query = "INSERT INTO users VALUES (NULL, '$email', '$username', '$password')";
+		$clearance_level ='1';
+		$query = "INSERT INTO Users VALUES (NULL,'$username', '$password','$email','$clearance_level')";
+		$result = $connection->query($query);
+		if (!$result) die($connection->error);
+	}
+
+	function add_contributor($connection, $email, $username, $password)
+	{
+		$clearance_level = '2';
+		$query = "INSERT INTO Users VALUES (NULL,'$username', '$password','$email','$clearance_level')";
 		$result = $connection->query($query);
 		if (!$result) die($connection->error);
 	}

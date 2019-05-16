@@ -9,6 +9,7 @@
 
 	//database login
 	require_once 'login.php';
+	require_once 'setupusers.php';
 	$conn = new mysqli($hn, $un, $pw, $db);
 	if ($conn->connect_error) die($conn->connect_error);
 	
@@ -41,15 +42,30 @@ _END;
                     echo "Only .txt files are allowed";
                     die;
             }
-			$username = mysql_entities_fix_string($conn, $username);
-			$title = mysql_entities_fix_string($conn, $_POST['title']);
-			$rawText = file_get_contents($_FILES['text']['tmp_name']);
-			$text = mysql_entities_fix_string($conn, $rawText);
-			$query = "INSERT INTO data VALUES" .
-				"(NULL, '$username', '$title', '$text')";
-			$result = $conn->query($query);
-			if (!$result) echo "INSERT failed: $query<br>" . $conn->error . "<br><br>";
+		// $username = mysql_entities_fix_string($conn, $username);
+		// $title = mysql_entities_fix_string($conn, $_POST['title']);
+		// $rawText = file_get_contents($_FILES['text']['tmp_name']);
+		// $text = mysql_entities_fix_string($conn, $rawText);
+		// $query = "INSERT INTO data VALUES" .
+		// 	"(NULL, '$username', '$title', '$text')";
+		// $result = $conn->query($query);
+		// if (!$result) echo "INSERT failed: $query<br>" . $conn->error . "<br><br>";
+
+		
 		}
+	//$username = $_SESSION['username'];
+	
+	$query = "SELECT * FROM Users WHERE Username = '$username';";
+	$result = $conn->query($query);
+	if (!$result) die($conn->error);
+	elseif ($result->num_rows) {
+		$row = $result->fetch_array(MYSQLI_NUM);
+		$result->close();
+		$clearance = $row[4];
+		$sess_name = $row[1];
+		
+	}
+
 		
 		//add file form TODO: replace with virus check
 		echo <<<_END
@@ -64,7 +80,31 @@ _END;
     Choose your file <input type="file" name = "text">
     
     <input type="submit" value= "ADD RECORD">
-    </pre></form>
+	</pre></form>
+_END;
+		if($clearance > 1){
+		echo <<<_END
+	Here is where you can add a potential Malware into Limbo.
+	<form enctype="multipart/form-data" action="start.php" method="POST"><pre>
+	Enter the name of the Malware <input type="text" name="malwareName">
+
+	Choose the malware file <input type="file" name="malwareFile">
+
+	<input type="submit" value="ADD RECORD">
+	</pre></form>
+_END;
+		if($clearance > 2){
+			
+		echo <<<_END
+	And here is where you can choose which Malware from Limbo you would 
+	like to add to our MalwareDex!
+	<form action='start.php' method="POST"><pre>
+	Enter the name of the Malware <input type="text" name="chosenMalware">
+		</pre></form>
+_END;
+		}
+		}
+		echo <<<_END
 </body>
 </html>
 _END;
