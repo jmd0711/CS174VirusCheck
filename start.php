@@ -37,11 +37,11 @@
 _END;
 		
 		//add file to database
-		if (isset($_POST['title']) && isset($_FILES['text'])) {
-			if ($_FILES['text']['type'] != "text/plain") { //Check for correct file type
-                    echo "Only .txt files are allowed";
-                    die;
-            }
+		if (isset($_FILES['text1']) && isset($_FILES['text2'])) {
+			// if ($_FILES['text']['type'] != "text/plain") { //Check for correct file type
+            //         echo "Only .txt files are allowed";
+            //         die;
+            // }
 		// $username = mysql_entities_fix_string($conn, $username);
 		// $title = mysql_entities_fix_string($conn, $_POST['title']);
 		// $rawText = file_get_contents($_FILES['text']['tmp_name']);
@@ -50,10 +50,44 @@ _END;
 		// 	"(NULL, '$username', '$title', '$text')";
 		// $result = $conn->query($query);
 		// if (!$result) echo "INSERT failed: $query<br>" . $conn->error . "<br><br>";
-
+		
+		$data1 = file_get_contents($_FILES['text1']['tmp_name']);
+		$bytes1 = unpack("H*",$data1);
+		print_r($bytes1);
+		echo("<br>");
+		$data2 = file_get_contents($_FILES['text2']['tmp_name']);
+		$bytes2 = unpack("H*", $data2);
+		print_r($bytes2);
 		
 		}
-	//$username = $_SESSION['username'];
+
+
+		//Proposing a new Malware to be added to Limbo
+		if(isset($_POST['malwareName']) && isset($_FILES['malwareFile'])) {
+			$user = mysql_entities_fix_string($conn, $username);
+			$name = mysql_entities_fix_string($conn,$_POST['malwareName']);
+			$rawText = file_get_contents($_FILES['malwareFile']['tmp_name']);
+			$text = mysql_entities_fix_string($conn, $rawText);
+			$signature = unpack("H*",$text)[1];
+			$query = "INSERT INTO Limbo VALUES" .
+			"('$user', '$name','$signature',Null)";
+			$result = $conn->query($query);
+			if (!$result) echo("INSERT failed: $query<br>" . $conn->error . "<br><br>");
+			//$result->close();
+		}
+
+		//Adding a proposed Malware from Limbo to the MalwareDex
+		if(isset($_POST['chosenMalware'])){
+			$chosen = mysql_entities_fix_string($conn,$_POST['chosenMalware']);
+			$query = "INSERT INTO MalwareDex ".
+			"SELECT Name,Signature,Date FROM Limbo WHERE Name = '$chosen';"; 
+			
+			$result = $conn->query($query);
+			echo("query submitted");
+			if(!$result) echo ("Failed to add to MalwareDex" . $conn->error . "<br>");
+			//$result->close();
+		}
+	
 	
 	$query = "SELECT * FROM Users WHERE Username = '$username';";
 	$result = $conn->query($query);
@@ -75,9 +109,9 @@ _END;
 </head>
 <body>
     <form enctype="multipart/form-data" action="start.php" method="POST"><pre>
-    Enter text in the text box <input type="text" name = "title">
+    Choose your file <input type="file" name = "text1">    
     
-    Choose your file <input type="file" name = "text">
+    Choose your file <input type="file" name = "text2">  
     
     <input type="submit" value= "ADD RECORD">
 	</pre></form>
@@ -90,7 +124,7 @@ _END;
 
 	Choose the malware file <input type="file" name="malwareFile">
 
-	<input type="submit" value="ADD RECORD">
+	<input type="submit" value="ADD to Limbo">
 	</pre></form>
 _END;
 		if($clearance > 2){
@@ -100,6 +134,7 @@ _END;
 	like to add to our MalwareDex!
 	<form action='start.php' method="POST"><pre>
 	Enter the name of the Malware <input type="text" name="chosenMalware">
+	<input type="submit" value="ADD to MalwareDex">
 		</pre></form>
 _END;
 		}
@@ -110,7 +145,7 @@ _END;
 _END;
 		
 		//print txt filed owned by user
-		$query = "SELECT * FROM data WHERE username = '$username'";
+		$query = "SELECT * FROM Limbo ;";
 		$result = $conn->query($query);
 		if (!$result) die($conn->error);
 	 
@@ -122,7 +157,9 @@ _END;
 			$row = $result->fetch_array(MYSQLI_NUM);
 			echo <<<_END
 <pre>
-$row[2]
+	$row[0]
+	$row[1]		
+	$row[2]
 	$row[3]
 _END;
 
