@@ -37,28 +37,37 @@
 _END;
 		
 		//add file to database
-		if (isset($_FILES['text1']) && isset($_FILES['text2'])) {
-			// if ($_FILES['text']['type'] != "text/plain") { //Check for correct file type
-            //         echo "Only .txt files are allowed";
-            //         die;
-            // }
-		// $username = mysql_entities_fix_string($conn, $username);
-		// $title = mysql_entities_fix_string($conn, $_POST['title']);
-		// $rawText = file_get_contents($_FILES['text']['tmp_name']);
-		// $text = mysql_entities_fix_string($conn, $rawText);
-		// $query = "INSERT INTO data VALUES" .
-		// 	"(NULL, '$username', '$title', '$text')";
-		// $result = $conn->query($query);
-		// if (!$result) echo "INSERT failed: $query<br>" . $conn->error . "<br><br>";
+		if (isset($_FILES['text1'])) {
 		
+		// $data1 = file_get_contents($_FILES['text1']['tmp_name']);
+		// $bytes1 = unpack("H*",$data1);
+		// print_r($bytes1);
+		// echo("<br>");
+		// $data2 = file_get_contents($_FILES['text2']['tmp_name']);
+		// $bytes2 = unpack("H*", $data2);
+		// print_r($bytes2);
+
 		$data1 = file_get_contents($_FILES['text1']['tmp_name']);
+		//$data1 = mysql_entities_fix_string($conn,$data1);
 		$bytes1 = unpack("H*",$data1);
-		print_r($bytes1);
-		echo("<br>");
-		$data2 = file_get_contents($_FILES['text2']['tmp_name']);
-		$bytes2 = unpack("H*", $data2);
-		print_r($bytes2);
-		
+		//print_r($bytes1);
+
+		$query = "SELECT * FROM MalwareDex";
+		$result = $conn->query($query);
+		if(!$result)die($conn->error);
+		$rows = $result->num_rows;
+		$clean = true;
+		for ($i = 0; $i < $rows; ++$i) {
+			$result->data_seek($i);
+			$row = $result->fetch_array(MYSQLI_NUM);
+			if(strpos($bytes1[1],$row[1])!== false){
+				echo("Your file was infected by the Malware: ".$row[0]."<br>");
+				$clean = false;
+				}
+			}
+			if($clean){
+			echo("It's clean");
+			}
 		}
 
 
@@ -110,8 +119,6 @@ _END;
 <body>
     <form enctype="multipart/form-data" action="start.php" method="POST"><pre>
     Choose your file <input type="file" name = "text1">    
-    
-    Choose your file <input type="file" name = "text2">  
     
     <input type="submit" value= "ADD RECORD">
 	</pre></form>
