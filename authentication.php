@@ -57,9 +57,9 @@
 	
 	//functions
 	function invalid_credentials() {
-		http_response-code(401); //clears $_SERVER
 		echo "Invalid username or password";
 		echo "<br><a href = 'start.php'>Return to Sign In page.</a>";
+		http_response_code(401); //clears $_SERVER
 	}
 	
 	//santize functions
