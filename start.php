@@ -16,7 +16,12 @@
 	//start session
 	//TODO: session security
 	session_start();
-	if(isset($_SESSION['username'])) {
+	if (!isset($_SESSION['initiated'])) {
+		session_regenerate_id();
+		$_SESSION['initiated'] = 1;
+	}
+	if ($_SESSION['check'] != hash('ripemd128', $_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'])) different_user();
+	if (isset($_SESSION['username'])) {
 		//user start page
 		$email = $_SESSION['email'];
 		$username = $_SESSION['username'];
@@ -190,5 +195,11 @@ _END;
 	function mysql_fix_string($connection, $string) {
 		if (get_magic_quotes_gpc()) $string = stripslashes($string);
 			return $connection->real_escape_string($string);
-}
+	}
+	
+	//session
+	function different_user() {
+		destroy_session_and_data();
+		echo "An unexpected error has occured.<br>";
+	}
 ?>

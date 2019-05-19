@@ -36,6 +36,7 @@
 				$_SESSION['username'] = $un_temp;
 				$_SESSION['password'] = $pw_temp;
 				$_SESSION['email'] = $row[1];
+				$_SESSION['check'] = hash('ripemd128', $_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
 				echo "You are now logged in as $row[1]";
 				die("<p><a href=start.php>Click here to continue</a></p>");
 			}
