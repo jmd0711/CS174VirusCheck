@@ -110,7 +110,8 @@
 			<tr><td>Password</td>
 				<td><input type="password" maxlength="32" name="password">
 			<tr><td><input type="checkbox" name="contributor"> Sign me up as a contributor
-			</td></tr><tr><td colspan="2" align="center"><input type="submit" value="signup"></td></tr>
+			</td></tr><tr><td colspan="2" align="center"><input type="submit" value="sign up"></td></tr>
+			</td></tr><tr><td colspan="2" align="center"><a href="start.php" class="button--style-red">return</a></td></tr>
 		</form>
 	</table>
 </body>

@@ -20,10 +20,9 @@
 		session_regenerate_id();
 		$_SESSION['initiated'] = 1;
 	}
-	if ($_SESSION['check'] != hash('ripemd128', $_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'])) different_user();
 	if (isset($_SESSION['username'])) {
 		//user start page
-		$email = $_SESSION['email'];
+		if ($_SESSION['check'] != hash('ripemd128', $_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'])) different_user();
 		$username = $_SESSION['username'];
 		$password = $_SESSION['password'];
 		
