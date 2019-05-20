@@ -151,11 +151,12 @@ _END;
 		}
 		}
 		echo <<<_END
+		<span style="color: blue; font-size: 20px;">User submitted malwares are listed below:</span>
 </body>
 </html>
 _END;
 		
-		//print txt filed owned by user
+		//print contents of malware data tables
 		$query = "SELECT * FROM Limbo ;";
 		$result = $conn->query($query);
 		if (!$result) die($conn->error);
@@ -166,15 +167,43 @@ _END;
 	 
 			$result->data_seek($i);
 			$row = $result->fetch_array(MYSQLI_NUM);
+			
 			echo <<<_END
 <pre>
-	$row[0]
-	$row[1]		
-	$row[2]
-	$row[3]
+	Proposed by user: $row[0]
+	Name of malware: $row[1]		
+	Malware Signature: $row[2]
+	Date proposed: $row[3]
+
 _END;
 
 		}
+
+		$query = "SELECT * FROM MalwareDex ;";
+		$result = $conn->query($query);
+		if (!$result) die($conn->error);
+		$rows_md = $result->num_rows;
+		echo <<<_END
+
+<span style="color: red; font-size: 30px;">Contents of MalwareDex are listed below:</span>
+</body>
+</html>		
+_END;
+
+	for ($i = 0; $i < $rows_md; ++$i) {
+
+		$result->data_seek($i);
+		$row = $result->fetch_array(MYSQLI_NUM);
+
+		echo <<<_END
+	<pre>
+	Name of malware: $row[0]		
+	Malware Signature: $row[1]
+	Date added: $row[2]
+	</pre>
+_END;
+	} 
+
 	}
 	//no user logged in
 	else echo "Please <a href = 'authentication.php'>login</a> or <a href = 'signup.php'>sign up.</a>";
